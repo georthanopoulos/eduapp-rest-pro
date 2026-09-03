@@ -1,6 +1,7 @@
 package gr.aueb.cf.eduapp.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,4 +28,19 @@ public class PersonalInfo extends AbstractEntity {
 
     @Column(name = "municipality_of_registration", nullable = false)
     private String municipalityOfRegistration;
+
+    @Setter(AccessLevel.PACKAGE)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "amka_file_id")
+    private Attachment amkaFile;
+
+    
+    // Helper Methods
+    public void addAmkaFile(Attachment amkaFile) {
+        this.amkaFile = amkaFile;
+    }
+
+    public void removeAmkaFile(Attachment amkaFile) {
+        this.amkaFile = null;
+    }
 }
