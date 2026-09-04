@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -25,7 +26,12 @@ public class Role {                                         // without extends A
 
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.PACKAGE)
-    @ManyToMany(fetch = FetchType.LAZY)                    //This is how we treat the N:N relationships.
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    private Set<User> users = new HashSet<>();
+
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.PACKAGE)
+    @ManyToMany(fetch = FetchType.LAZY)                    //This is how we treat the M:M relationships.
     @JoinTable(
             name = "roles_capabilities",
             joinColumns = @JoinColumn(name = "role_id"),
@@ -50,4 +56,14 @@ public class Role {                                         // without extends A
         capability.getRoles().remove(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Role role)) return false;
+        return Objects.equals(getName(), role.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getName());
+    }
 }
