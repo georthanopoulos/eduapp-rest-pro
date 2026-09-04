@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
-@MappedSuperclass                                          // Annotation -> This class' purpose is only to be inherited.
+@MappedSuperclass                                      // Annotation -> This class' purpose is to only become inherited.
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,6 +1,7 @@
 package gr.aueb.cf.eduapp.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,8 @@ public class Role {                                         // without extends A
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.PACKAGE)
     @ManyToMany(fetch = FetchType.LAZY)                    //This is how we treat the N:N relationships.
     @JoinTable(
             name = "roles_capabilities",
@@ -46,6 +49,5 @@ public class Role {                                         // without extends A
         capabilities.remove(capability);
         capability.getRoles().remove(this);
     }
-
 
 }

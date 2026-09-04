@@ -29,7 +29,7 @@ public class Region {                                        // Not needed to ex
     @OneToMany(mappedBy = "region",  fetch = FetchType.LAZY)
     private Set<Teacher> teachers = new HashSet<>();            // The declaration is "SET" interface! It must be Interface!
 
-    public Set<Teacher> getTeachers() {
+    public Set<Teacher> getAllTeachers() {
         return Collections.unmodifiableSet(teachers);
     }
 

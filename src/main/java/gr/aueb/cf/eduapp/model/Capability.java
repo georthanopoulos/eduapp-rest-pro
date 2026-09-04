@@ -27,7 +27,7 @@ public class Capability {
 
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.PACKAGE)
-    @ManyToMany(mappedBy = "capabilities")
+    @ManyToMany(mappedBy = "capabilities", fetch = FetchType.LAZY)
     private Set<Role> roles = new HashSet<>();
 
     public Set<Role> getAllRoles() {
