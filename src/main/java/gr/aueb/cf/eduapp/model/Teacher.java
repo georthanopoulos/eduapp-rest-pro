@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -40,6 +41,14 @@ public class Teacher extends AbstractEntity{
     @JoinColumn(name = "personal_info_id")                           // not needed to be done mappedBy apo thn allh pleyra giati einai unidirectional kai panta pame apo to teacher sto personal info kai oxi anapoda! mporoyme na to kanoyme alla den exei nohma!
     private PersonalInfo personalInfo;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Teacher teacher)) return false;
+        return Objects.equals(getVat(), teacher.getVat());
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getVat());
+    }
 }
