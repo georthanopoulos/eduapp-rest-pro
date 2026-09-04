@@ -1,6 +1,5 @@
 package gr.aueb.cf.eduapp.repository;
 
-import gr.aueb.cf.eduapp.model.Region;
 import gr.aueb.cf.eduapp.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
