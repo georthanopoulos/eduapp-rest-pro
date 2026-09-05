@@ -54,7 +54,7 @@ public class Teacher extends AbstractEntity{
     }
 
     public void removeUser (User user) {
-        this.user = user;
+        this.user = null;
         user.setTeacher(null);
     }
 

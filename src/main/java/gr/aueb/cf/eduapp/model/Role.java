@@ -31,7 +31,7 @@ public class Role {                                         // without extends A
     private Set<User> users = new HashSet<>();
 
     public Set<User> getAllUsers() {
-        return Set.copyOf(this.users);
+        return Set.copyOf(users);
     }
 
     @Setter(AccessLevel.NONE)

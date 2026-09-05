@@ -33,9 +33,9 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({EntityAlreadyExistsException.class})
     public ResponseEntity<ErrorResponseDTO> handleEntityAlreadyExistsException(EntityAlreadyExistsException e) {
-        log.warn("Exntity already exists. Message: {}", e.getMessage());
+        log.warn("Entity already exists. Message: {}", e.getMessage());
         return ResponseEntity
-                .status(HttpStatus.CONFLICT)                                          // Http code - 409 Bad Request (dublicate).
+                .status(HttpStatus.CONFLICT)                                          // Http code - 409 Bad Request (duplicate).
                 .body(new ErrorResponseDTO(e.getCode(), e.getMessage()));              // Business code
     }
 }
