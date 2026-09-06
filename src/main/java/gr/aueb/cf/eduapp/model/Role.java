@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "roles")
-public class Role {                                         // without extends AbstractEntity in order to avoid timestamps in this case. not needed!
+public class Role {                                         // Without extending AbstractEntity, in order to avoid timestamps in this case. Not needed!
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class Role {                                         // without extends A
 
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.PACKAGE)
-    @ManyToMany(fetch = FetchType.LAZY)                    //This is how we treat the M:M relationships.
+    @ManyToMany(fetch = FetchType.LAZY)                    // This is how we treat the M:M relationships.
     @JoinTable(
             name = "roles_capabilities",
             joinColumns = @JoinColumn(name = "role_id"),

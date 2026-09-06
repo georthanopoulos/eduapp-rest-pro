@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "regions")
-public class Region {                                        // Not needed to extends AbstractEntity because we would need timestamp, something that would make difficult the insert process.
+public class Region {                                        // Not needed to extend AbstractEntity because we would need timestamp, something that would make difficult the insert process.
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Region {                                        // Not needed to ex
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Getter(AccessLevel.PACKAGE)                                 // We have collection -> reduce getter accesslevel too.
+    @Getter(AccessLevel.PACKAGE)                                 // We have collection. -> Reduce Getter access-level too!!!
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "region",  fetch = FetchType.LAZY)
     private Set<Teacher> teachers = new HashSet<>();            // The declaration is "SET" interface! It must be Interface!
