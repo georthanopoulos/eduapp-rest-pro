@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 public class ErrorHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({EntityNotFoundException.class})
+    @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleEntityNotFoundException(EntityNotFoundException e) {
         log.warn("Entity not found. Message: {}", e.getMessage());
         return ResponseEntity
@@ -33,7 +33,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponseDTO(e.getCode(), e.getMessage()));                // Business code
     }
 
-    @ExceptionHandler({EntityInvalidArgumentException.class})
+    @ExceptionHandler(EntityInvalidArgumentException.class)
     public ResponseEntity<ErrorResponseDTO> handleEntityInvalidArgumentException(EntityInvalidArgumentException e) {
         log.warn("Invalid argument. Message: {}", e.getMessage());
         return ResponseEntity
@@ -41,7 +41,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponseDTO(e.getCode(), e.getMessage()));              // Business code
     }
 
-    @ExceptionHandler({EntityAlreadyExistsException.class})
+    @ExceptionHandler(EntityAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleEntityAlreadyExistsException(EntityAlreadyExistsException e) {
         log.warn("Entity already exists. Message: {}", e.getMessage());
         return ResponseEntity
