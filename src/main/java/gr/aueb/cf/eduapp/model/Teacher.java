@@ -41,8 +41,8 @@ public class Teacher extends AbstractEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id")
     private Region region;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)       // cascade -> teacher delete  ara kai to info delete.   . and kanv Simultaneously with the update or delete of the personal info must be updated or deleted too.
+                                                                                               // orphanRemoval = true -> If the child entity gets detached from the parent (e.g: reference=null or substituted by another object) then the old child entity is automatically removed from the DB!!!
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)       // CascadeType.ALL -> whatever happens to the parent Entity (Persist,Merge,Remove,Refresh,detach) will be transmitted to the related entity automatically!!!
     @JoinColumn(name = "personal_info_id")                           // Not needed "mappedBy:" on the other side because it is a unidirectional relationship. Consequently, we always go from the Teacher to PersonalInfo and NOT the opposite. (In fact, we can do it doesn't make sense!)
     private PersonalInfo personalInfo;
 
