@@ -6,8 +6,13 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
+import java.util.UUID;
+
 @Builder
 public record TeacherUpdateDTO(
+
+        @NotNull
+        UUID uuid,
 
         @NotNull
         @Size(min = 2)
@@ -25,10 +30,9 @@ public record TeacherUpdateDTO(
 
         @NotNull
         @Valid
-        UserInsertDTO userInsertDTO,
+        UserInsertDTO userUpdateDTO,
 
         @NotNull
         @Valid
-        PersonalInfoInsertDTO personalInfo
-) {
-}
+        PersonalInfoInsertDTO personalInfoUpdateDTO
+) {}

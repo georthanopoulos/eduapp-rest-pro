@@ -80,7 +80,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponseDTO("DATABASE_ERROR", "A database error occurred"));
+                .body(new ErrorResponseDTO("DATABASE_ERROR", "A database error occurred."));
     }
 
     @ExceptionHandler(Exception.class)
@@ -89,7 +89,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponseDTO("Internal Server Error", "An unexpected error occurred"));
+                .body(new ErrorResponseDTO("Internal Server Error", "An unexpected error occurred."));
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -107,7 +107,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         };
 
             return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)   // 401 Unauthorized
+                    .status(HttpStatus.UNAUTHORIZED)                        // 401 Unauthorized
                     .body(new ErrorResponseDTO(errorCode, e.getMessage()));
     }
 
@@ -116,7 +116,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         log.warn("Access denied. Message: {}", e.getMessage());
 
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)     // 403 Forbidden
+                .status(HttpStatus.FORBIDDEN)                               // 403 Forbidden
                 .body(new ErrorResponseDTO("ACCESS_DENIED", e.getMessage()));
     }
 

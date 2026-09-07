@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
-@Builder                                        // Instead of bigger constructors to have a better pattern through lombok. when we have many fields
+@Builder                                        // Instead of bigger constructors when we have many fields. A better pattern through lombok. (Not @AllArgsConstructor is needed as we are in a record and not in a class).
 public record PersonalInfoInsertDTO(
 
         @NotNull

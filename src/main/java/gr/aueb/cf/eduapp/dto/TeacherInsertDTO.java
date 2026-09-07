@@ -29,6 +29,5 @@ public record TeacherInsertDTO(
 
         @NotNull
         @Valid
-        PersonalInfoInsertDTO personalInfo
-) {
-}
+        PersonalInfoInsertDTO personalInfoInsertDTO
+) {}
