@@ -32,7 +32,7 @@ public class Teacher extends AbstractEntity{
     @Column(nullable = false)
     private String lastname;
 
-    @Setter(AccessLevel.PACKAGE)            // den maw endiaferei o getter giati einai entity den einai collection
+    @Setter(AccessLevel.PACKAGE)                     // We don't care about the Getter as it is Entity not a collection.
     @OneToOne(cascade = CascadeType.PERSIST,  fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

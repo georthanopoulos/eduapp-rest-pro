@@ -28,7 +28,7 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)                           // Hashed Password retained into Database. And BCrypt - one way hash. Signature!
+    @Column(nullable = false)                           // Hashed password retained into Database. And BCrypt - one way hash. Signature!
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
