@@ -4,8 +4,10 @@ import gr.aueb.cf.eduapp.core.exceptions.EntityAlreadyExistsException;
 import gr.aueb.cf.eduapp.core.exceptions.EntityInvalidArgumentException;
 import gr.aueb.cf.eduapp.core.exceptions.EntityNotFoundException;
 import gr.aueb.cf.eduapp.core.exceptions.FileUploadException;
+import gr.aueb.cf.eduapp.core.filters.TeacherFilters;
 import gr.aueb.cf.eduapp.dto.TeacherInsertDTO;
 import gr.aueb.cf.eduapp.dto.TeacherReadOnlyDTO;
+import gr.aueb.cf.eduapp.dto.TeacherUpdateDTO;
 import gr.aueb.cf.eduapp.mapper.Mapper;
 import gr.aueb.cf.eduapp.model.*;
 import gr.aueb.cf.eduapp.repository.*;
@@ -13,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service                                         //stereotype annotation for services
@@ -153,6 +158,167 @@ public class TeacherService implements ITeacherService {
                 }
             }
         });
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = {EntityNotFoundException.class,
+            EntityAlreadyExistsException.class, EntityInvalidArgumentException.class})
+    public TeacherReadOnlyDTO updateTeacher(TeacherUpdateDTO dto)
+            throws EntityNotFoundException, EntityAlreadyExistsException, EntityInvalidArgumentException {
+
+        Teacher teacher = teacherRepository.findByUuid(dto.uuid())
+                .orElseThrow (() -> new EntityNotFoundException("Teacher", "Teacher with id=" + dto.uuid() +
+                        " does not exist"));
+
+        teacher.setFirstname(dto.firstname());
+        teacher.setLastname(dto.lastname());
+
+        if (!teacher.getVat().equals(dto.vat())) {
+            if (teacherRepository.findByVat(dto.vat()).isPresent()) {
+                throw new EntityAlreadyExistsException("Vat", "Vat with id=" + dto.vat() + " already exists");
+            }
+        }
+        teacher.setVat(dto.vat());
+
+        if (!teacher.getPersonalInfo().getIdentityNumber().equals(dto.personalInfoUpdateDTO().identityNumber())) {
+            if (personalInfoRepository.findByIdentityNumber(dto.personalInfoUpdateDTO().identityNumber()).isPresent()) {
+                throw new EntityAlreadyExistsException("","Teacher with identity number "
+                        + dto.personalInfoUpdateDTO().identityNumber()
+                        + " already exists");
+            }
+            teacher.getPersonalInfo().setIdentityNumber(dto.personalInfoUpdateDTO().identityNumber());
+        }
+
+        if (!Objects.equals(dto.regionId(), teacher.getRegion().getId())) {
+            Region newRegion = regionRepository.findById(dto.regionId())
+                    .orElseThrow(() -> new EntityInvalidArgumentException("Region","Region id=" + dto.regionId() + " invalid"));
+            Region oldRegion = teacher.getRegion();
+            if (oldRegion != null) oldRegion.removeTeacher(teacher);
+            newRegion.addTeacher(teacher);
+        }
+
+        if (!Objects.equals(dto.userUpdateDTO().username(), teacher.getUser().getUsername())) {
+            if (userRepository.findByUsername(dto.userUpdateDTO().username()).isPresent()) {
+                throw new EntityAlreadyExistsException("Username", "User with username " + dto.userUpdateDTO().username()
+                        + " already exists");
+            }
+            teacher.getUser().setUsername(dto.userUpdateDTO().username());
+        }
+
+        // TODO hashed equals
+
+        if (!teacher.getPersonalInfo().getIdentityNumber().equals(dto.personalInfoUpdateDTO().identityNumber())) {
+
+            if (personalInfoRepository.findByIdentityNumber(dto.personalInfoUpdateDTO().identityNumber()).isPresent()) {
+
+                throw new EntityAlreadyExistsException("","Teacher with identity number "
+
+                        + dto.personalInfoUpdateDTO().identityNumber()
+
+                        + " already exists");
+
+            }
+
+            teacher.getPersonalInfo().setIdentityNumber(dto.personalInfoUpdateDTO().identityNumber());
+
+        }
+
+        if (!Objects.equals(dto.regionId(), teacher.getRegion().getId())) {
+
+            Region newRegion = regionRepository.findById(dto.regionId())
+
+                    .orElseThrow(() -> new EntityInvalidArgumentException("Region","Region id=" + dto.regionId() + " invalid"));
+
+            Region oldRegion = teacher.getRegion();
+
+            if (oldRegion != null) oldRegion.removeTeacher(teacher);
+
+            newRegion.addTeacher(teacher);
+
+        }
+
+        if (!Objects.equals(dto.userUpdateDTO().username(), teacher.getUser().getUsername())) {
+
+            if (userRepository.findByUsername(dto.userUpdateDTO().username()).isPresent()) {
+
+                throw new EntityAlreadyExistsException("Username", "User with username " + dto.userUpdateDTO().username()
+
+                        + " already exists");
+
+            }
+
+            teacher.getUser().setUsername(dto.userUpdateDTO().username());
+
+        }
+
+        if (!Objects.equals(dto.userUpdateDTO().password(), teacher.getUser().getPassword())) {
+
+            teacher.getUser().setPassword(passwordEncoder.encode(dto.userUpdateDTO().password()));
+
+        }
+
+        teacherRepository.save(teacher);        // Proairetiko - dirty checked
+
+
+
+
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = { EntityNotFoundException.class })
+    public TeacherReadOnlyDTO deleteTeacherByUUID(UUID uuid) throws EntityNotFoundException {
+        Teacher teacher = teacherRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid + "not found"));
+
+        teacher.softDelete();
+        teacher.getPersonalInfo().softDelete();
+        teacher.getUser().softDelete();
+
+        // No save is needed if Teacher is managed (if teacher is fetched)
+        // teacherRepository.save(teacher);
+        log.info("Teacher with uuid={} deleted successfully", uuid);
+        return mapper.mapToTeacherReadonlyDTO(teacher);
+    }
+
+    @Override
+    public TeacherReadOnlyDTO getTeacherByUUID(UUID uuid) throws EntityNotFoundException {
+        Teacher teacher = teacherRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
+        log.info("Teacher with uuid={} found successfully", uuid);
+        return mapper.mapToTeacherReadonlyDTO(teacher);
+    }
+
+    @Override
+    public TeacherReadOnlyDTO getTeacherByUUIDDeletedFalse(UUID uuid) throws EntityNotFoundException {
+        Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
+        log.info("Teacher with uuid={} returned successfully", uuid);
+        return mapper.mapToTeacherReadonlyDTO(teacher);
+    }
+
+    @Override
+    public Page<TeacherReadOnlyDTO> getPaginatedTeachers(Pageable pageable) {
+        Page<Teacher> teacherPage = teacherRepository.findAll(pageable);
+        log.debug("Get paginated returned successfully, page= {}, size= {}",
+                teacherPage.getNumber(),
+                teacherPage.getSize());
+        return teacherPage.map(mapper::mapToTeacherReadonlyDTO);
+    }
+
+    @Override
+    public Page<TeacherReadOnlyDTO> getPaginatedTeachersDeletedFalse(Pageable pageable) {
+        Page<Teacher> teacherPage = teacherRepository.findAllByDeletedFalse(pageable);
+        log.debug("Get paginated not deleted returned successfully, page= {}, size= {}",
+                teacherPage.getNumber(),
+                teacherPage.getSize());
+        return teacherPage.map(mapper::mapToTeacherReadonlyDTO);
+    }
+
+    @Override
+    public Page<TeacherReadOnlyDTO> getTeachersPaginatedFiltered(Pageable pageable, TeacherFilters filters)
+            throws EntityNotFoundException {
 
     }
 
