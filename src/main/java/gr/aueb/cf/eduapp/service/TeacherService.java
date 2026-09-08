@@ -61,7 +61,7 @@ public class TeacherService implements ITeacherService {
         if (dto.userInsertDTO().username() != null &&
                 userRepository.findByUsername(dto.userInsertDTO().username()).isPresent()) {
             throw new EntityAlreadyExistsException("Username",  "User with username="
-                    +  dto.userInsertDTO().username() +  " already exists");
+                    +  dto.userInsertDTO().username() +  "already exists");
         }
 
         Region region = regionRepository.findById(dto.regionId()).orElseThrow(() ->
