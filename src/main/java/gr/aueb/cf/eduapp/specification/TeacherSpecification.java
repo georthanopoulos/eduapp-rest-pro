@@ -1,6 +1,5 @@
 package gr.aueb.cf.eduapp.specification;
 
-
 import gr.aueb.cf.eduapp.core.filters.TeacherFilters;
 import gr.aueb.cf.eduapp.dto.TeacherReadOnlyDTO;
 import gr.aueb.cf.eduapp.model.Teacher;
@@ -15,20 +14,18 @@ public class TeacherSpecification {
                 isDeleted(filters.isDeleted())
         );
     }
-
-    public static Specification<Teacher> hasLastname(String lastname) {               //kanoyme specific filtering only for everything except from the uniques ones (uuid, vat, amka)
-
-        return((root, query, criteriaBuilder) -> lastname == null ? criteriaBuilder.conjunction() :
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("lastname")), "%" + lastname.toLowerCase() + "%"));   // always do 'like' when we have String
+                                                                          // specific filtering is performed for every field except from the unique ones (uuid, vat, amka) through which only (up to) one Teacher can be specified!
+    public static Specification<Teacher> hasLastname(String lastname) {
+        return ((root, query, criteriaBuilder) -> lastname == null ? criteriaBuilder.conjunction() :
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("lastname")), "%" + lastname.toLowerCase() + "%"));
     }
-
     public static Specification<Teacher> hasRegion(String region) {
-
-        return((root, query, criteriaBuilder) -> region == null ? criteriaBuilder.conjunction() :
+        return ((root, query, criteriaBuilder) -> region == null ? criteriaBuilder.conjunction() :
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("region")), "%" + region.toLowerCase() + "%"));
     }
 
-    public static Specification<Teacher> isDeleted(boolean deleted) {                               // default is false!
-        return((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("deleted"), deleted));
+    public static Specification<Teacher> isDeleted(boolean deleted) {   // default is false
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("deleted"), deleted));
     }
+
 }

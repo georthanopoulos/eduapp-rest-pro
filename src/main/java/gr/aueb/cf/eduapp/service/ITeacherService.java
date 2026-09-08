@@ -32,7 +32,7 @@ public interface ITeacherService {
     Page<TeacherReadOnlyDTO> getPaginatedTeachers(Pageable pageable);
     Page<TeacherReadOnlyDTO> getPaginatedTeachersDeletedFalse(Pageable pageable);
     Page<TeacherReadOnlyDTO> getTeachersPaginatedFiltered(Pageable pageable, TeacherFilters filters)
-        throws EntityNotFoundException;
+            throws EntityNotFoundException;
 
 
 }
