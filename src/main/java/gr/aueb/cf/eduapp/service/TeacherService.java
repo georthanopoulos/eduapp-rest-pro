@@ -132,7 +132,7 @@ public class TeacherService implements ITeacherService {
             Tika tika = new Tika();
             attachment.setContentType(tika.detect(is));
         } catch (IOException e) {
-            throw new FileUploadException("FileUploadError", "Fail to dectect file type");
+            throw new FileUploadException("FileUploadError", "Fail to detect file type");
         }
 
         if (personalInfo.getAmkaFile() != null) {
