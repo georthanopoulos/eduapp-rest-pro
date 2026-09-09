@@ -114,8 +114,8 @@ public class TeacherService implements ITeacherService {
     public void saveAmkaFile(UUID uuid, MultipartFile amkaFile)
             throws FileUploadException, EntityNotFoundException {
 
-        Teacher teacher = teacherRepository.findByUuid(uuid).orElseThrow(()
-                -> new  EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
+        Teacher teacher = teacherRepository.findByUuid(uuid).orElseThrow(() ->
+                new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
 
         PersonalInfo personalInfo = teacher.getPersonalInfo();
 
@@ -277,21 +277,22 @@ public class TeacherService implements ITeacherService {
     @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getTeachersPaginatedFiltered(Pageable pageable, TeacherFilters filters)
             throws EntityNotFoundException {
+
         if (filters.getUuid() != null) {
             Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(filters.getUuid())
-                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + filters.getUuid() + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + filters.getUuid()));
             return singleResultPage(teacher, pageable);
         }
 
         if (filters.getAmka() != null) {
             Teacher teacher = teacherRepository.findByPersonalInfo_Amka(filters.getAmka())
-                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with amka=" + filters.getAmka() + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with amka=" + filters.getAmka()));
             return singleResultPage(teacher, pageable);
         }
 
         if (filters.getVat() != null) {
             Teacher teacher = teacherRepository.findByVatAndDeletedFalse(filters.getVat())
-                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with vat=" + filters.getVat() + " not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with vat=" + filters.getVat()));
             return singleResultPage(teacher, pageable);
         }
 

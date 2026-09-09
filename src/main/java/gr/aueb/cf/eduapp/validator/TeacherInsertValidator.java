@@ -21,7 +21,7 @@ public class TeacherInsertValidator implements Validator {
     }
 
     @Override
-    public void validate (Object target, Errors errors) {
+    public void validate(Object target, Errors errors) {
         TeacherInsertDTO teacherInsertDTO = (TeacherInsertDTO) target;
 
         if (teacherInsertDTO.vat() != null
