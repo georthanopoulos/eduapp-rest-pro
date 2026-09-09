@@ -37,7 +37,7 @@ public class Mapper {
         return teacher;
     }
 
-    public TeacherReadOnlyDTO mapToTeacherReadonlyDTO(Teacher teacher) {
+    public TeacherReadOnlyDTO mapToTeacherReadOnlyDTO(Teacher teacher) {
         return new TeacherReadOnlyDTO(teacher.getUuid().toString(),
                 teacher.getFirstname(), teacher.getLastname(), teacher.getVat(),
                 teacher.getRegion().getName());

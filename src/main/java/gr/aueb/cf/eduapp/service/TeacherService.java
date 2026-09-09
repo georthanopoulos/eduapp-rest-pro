@@ -11,11 +11,13 @@ import gr.aueb.cf.eduapp.dto.TeacherUpdateDTO;
 import gr.aueb.cf.eduapp.mapper.Mapper;
 import gr.aueb.cf.eduapp.model.*;
 import gr.aueb.cf.eduapp.repository.*;
+import gr.aueb.cf.eduapp.specification.TeacherSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +33,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -96,7 +99,7 @@ public class TeacherService implements ITeacherService {
         teacherRepository.save(teacher);
 
         log.info("Teacher with vat={} saved successfully", dto.vat());
-        return mapper.mapToTeacherReadonlyDTO(teacher);
+        return mapper.mapToTeacherReadOnlyDTO(teacher);
     }
 
     @Override
@@ -213,7 +216,7 @@ public class TeacherService implements ITeacherService {
 
         teacherRepository.save(teacher);    // προαιρετικό
         log.info("Teacher with uuid={} updated successfully", dto.uuid());
-        return mapper.mapToTeacherReadonlyDTO(teacher);
+        return mapper.mapToTeacherReadOnlyDTO(teacher);
     }
 
     @Override
@@ -229,47 +232,82 @@ public class TeacherService implements ITeacherService {
         // No save is needed if teacher is managed (if teacher is fetched)
         // teacherRepository.save(teacher);
         log.info("Teacher with uuid={} deleted successfully", uuid);
-        return  mapper.mapToTeacherReadonlyDTO(teacher);
+        return  mapper.mapToTeacherReadOnlyDTO(teacher);
     }
 
     @Override
+    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
     public TeacherReadOnlyDTO getTeacherByUUID(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
         log.info("Teacher with uuid={} found successfully", uuid);
-        return mapper.mapToTeacherReadonlyDTO(teacher);
+        return mapper.mapToTeacherReadOnlyDTO(teacher);
     }
 
     @Override
+    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
     public TeacherReadOnlyDTO getTeacherByUUIDDeletedFalse(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
         log.info("Teacher with uuid={} returned successfully", uuid);
-        return mapper.mapToTeacherReadonlyDTO(teacher);
+        return mapper.mapToTeacherReadOnlyDTO(teacher);
     }
 
     @Override
+    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getPaginatedTeachers(Pageable pageable) {
         Page<Teacher> teacherPage = teacherRepository.findAll(pageable);
         log.debug("Get paginated returned successfully, page={}, size={}",
                 teacherPage.getNumber(),
                 teacherPage.getSize());
-        return teacherPage.map(mapper::mapToTeacherReadonlyDTO);
+        return teacherPage.map(mapper::mapToTeacherReadOnlyDTO);
     }
 
     @Override
+    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getPaginatedTeachersDeletedFalse(Pageable pageable) {
         Page<Teacher> teacherPage = teacherRepository.findAllByDeletedFalse(pageable);
         log.debug("Get paginated not deleted returned successfully, page={}, size={}",
                 teacherPage.getNumber(),
                 teacherPage.getSize());
-        return teacherPage.map(mapper::mapToTeacherReadonlyDTO);
+        return teacherPage.map(mapper::mapToTeacherReadOnlyDTO);
     }
 
     @Override
+    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getTeachersPaginatedFiltered(Pageable pageable, TeacherFilters filters)
             throws EntityNotFoundException {
-        return null;
+        if (filters.getUuid() != null) {
+            Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(filters.getUuid())
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + filters.getUuid() + " not found"));
+            return singleResultPage(teacher, pageable);
+        }
+
+        if (filters.getAmka() != null) {
+            Teacher teacher = teacherRepository.findByPersonalInfo_Amka(filters.getAmka())
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with amka=" + filters.getAmka() + " not found"));
+            return singleResultPage(teacher, pageable);
+        }
+
+        if (filters.getVat() != null) {
+            Teacher teacher = teacherRepository.findByVatAndDeletedFalse(filters.getVat())
+                    .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with vat=" + filters.getVat() + " not found"));
+            return singleResultPage(teacher, pageable);
+        }
+
+        var filtered = teacherRepository.findAll(TeacherSpecification.build(filters), pageable);
+
+        log.debug("Filtered and paginated teachers were returned successfully with page= {} and size= {}",
+                pageable.getPageNumber(), pageable.getPageSize());
+        return filtered.map(mapper::mapToTeacherReadOnlyDTO);
+    }
+
+    private Page<TeacherReadOnlyDTO> singleResultPage(Teacher teacher, Pageable pageable) {
+        return new PageImpl<>(
+                List.of(mapper.mapToTeacherReadOnlyDTO(teacher)),
+                pageable,
+                1
+        );
     }
 
 

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class TeacherSpecification {
 
     public static Specification<Teacher> build(TeacherFilters filters) {
-        return Specification.allOf(
+        return Specification.allOf(                                       // "AND" is implied with the allOf.
                 hasLastname(filters.getLastname()),
                 hasRegion(filters.getRegion()),
                 isDeleted(filters.isDeleted())
