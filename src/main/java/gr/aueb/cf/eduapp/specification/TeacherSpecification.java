@@ -1,7 +1,6 @@
 package gr.aueb.cf.eduapp.specification;
 
 import gr.aueb.cf.eduapp.core.filters.TeacherFilters;
-import gr.aueb.cf.eduapp.dto.TeacherReadOnlyDTO;
 import gr.aueb.cf.eduapp.model.Teacher;
 import org.springframework.data.jpa.domain.Specification;
 
