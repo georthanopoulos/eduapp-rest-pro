@@ -25,8 +25,10 @@ public class JwtService {
 
     public String generateToken(String username, String role) {      // token is created and returns back to the client.
         var claims = new HashMap<String, Object>();
+
 //        claims.put("sub", username);
         claims.put("role", role);
+
         return Jwts
                 .builder()
                 .setIssuer("https://api.codingfactory.gr")
@@ -38,7 +40,7 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {        // validation token check.
+    public boolean isTokenValid(String token, UserDetails userDetails) {                  // validation token check.
         final String subject = extractSubject(token);
         return (subject.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
@@ -81,6 +83,7 @@ public class JwtService {
      *
      * @return  a SecretKey which implements Key.
      */
+
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

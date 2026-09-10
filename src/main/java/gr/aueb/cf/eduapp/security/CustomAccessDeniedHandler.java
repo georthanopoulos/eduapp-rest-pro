@@ -36,6 +36,5 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                         new ErrorResponseDTO("ACCESS_DENIED", "User is not allowed to access this route.")
                 )
         );
-
     }
 }

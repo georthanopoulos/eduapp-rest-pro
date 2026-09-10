@@ -48,13 +48,14 @@ public class SecurityConfiguration {
         http
                 .cors(httpSecurityCorsConfigurer ->
                         httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)     // exei nohma mono gia server side rendering ssr! alliws disabled!
+                .csrf(AbstractHttpConfigurer::disable)     // this line only matters in Server Size Rendering (SSR). Otherwise, it must be disabled!!!
+
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/authenticate").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/teachers").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/teachers/{uuid}/*").permitAll()
-                        .requestMatchers("/api/v1/eligible/**").permitAll()
+//                        .requestMatchers("/api/v1/eligible/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/*").hasAuthority("VIEW_USER")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/teachers/{uuid}").hasAuthority("EDIT_TEACHER")
@@ -63,9 +64,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/teachers/{uuid}").hasAuthority("DELETE_TEACHER")
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))    // υποδηλωνει οτι αυτη η εφαρμογη χρησιμοποιει τοκεν και οχι ψοοψκιεσ
+
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))    // this line indicates that this app uses token instead of cookies, something which is expected as this is a CSR app.
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler));
@@ -75,6 +78,7 @@ public class SecurityConfiguration {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("*"));
@@ -89,6 +93,7 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
                                                          PasswordEncoder passwordEncoder) {
+
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;

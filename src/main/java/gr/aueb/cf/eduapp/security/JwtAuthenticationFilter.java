@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String username;
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {  // 7 πρωτα γραμματα (0-6)..bearer με κενο. 6=κενο. απο το 7 και μετα ειναι το τοκεν.
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {      // 7 first characters. letters from 0 to 5 (bearer) and the space (=6). From 7th character onwards then actual token kicks in!!!
             filterChain.doFilter(request, response);
             return;
         }
@@ -47,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             username = jwtService.extractSubject(jwt);
-
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);

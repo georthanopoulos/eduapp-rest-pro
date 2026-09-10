@@ -22,7 +22,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final ObjectMapper objectMapper;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
                          AuthenticationException e) throws IOException, ServletException {
 
         Object jwtErrorCode = request.getAttribute("auth_error_code");
@@ -34,7 +35,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         if (jwtErrorCode != null) {
             errorCode = (String) jwtErrorCode;
             message = (String) jwtErrorMessage;
-
         } else {
             errorCode = switch (e.getClass().getSimpleName()) {
                 case "BadCredentialsException" -> "BAD_CREDENTIALS";
@@ -56,6 +56,5 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                         new ErrorResponseDTO(errorCode, message)
                 )
         );
-
     }
 }
