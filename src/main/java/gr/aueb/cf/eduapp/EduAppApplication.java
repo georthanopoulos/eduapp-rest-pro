@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.resilience.annotation.EnableResilientMethods;
 
 @SpringBootApplication
-@EnableResilientMethods                // automated within springBoot 4. otherwise in springBoot 3 we should insert libraries in nuild gradle..and do @EnableReTry as well.
+@EnableResilientMethods                // automated within springBoot 4. otherwise in springBoot 3 we should insert libraries in build gradle..and do @EnableReTry as well.
 @EnableJpaAuditing
 public class EduAppApplication {
 
