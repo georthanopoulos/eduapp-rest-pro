@@ -51,7 +51,7 @@ public class TeacherService implements ITeacherService {
     private final Mapper mapper;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${file.upload.dir}")                             // see application-dev.properties in resources!! We define there the params and we get them using the @Value annotation. BEST PRACTICE SOS!!!
+    @Value("${file.upload.dir}")                           // see application-dev.properties in resources!! We define there the params and we get them using the @Value annotation. BEST PRACTICE SOS!!!
     private String uploadDir;
 
     @Override
@@ -104,7 +104,8 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    @Retryable(                                      // Must ALWAYS BE INCLUDED when we have data sent over the Internet(HTTP). SOS!!!!
+    @Retryable(                                            // Must ALWAYS BE INCLUDED when we have data sent over the Internet(HTTP). SOS!!!!
+
             includes = { IOException.class, HttpServerErrorException.class },
             maxRetries = 3,
             delay = 2000,
@@ -115,8 +116,8 @@ public class TeacherService implements ITeacherService {
     public void saveAmkaFile(UUID uuid, MultipartFile amkaFile)
             throws FileUploadException, EntityNotFoundException {
 
-        Teacher teacher = teacherRepository.findByUuid(uuid).orElseThrow(() ->
-                new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
+        Teacher teacher = teacherRepository.findByUuid(uuid).orElseThrow(()
+                -> new  EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
 
         PersonalInfo personalInfo = teacher.getPersonalInfo();
 
@@ -136,7 +137,7 @@ public class TeacherService implements ITeacherService {
             Tika tika = new Tika();
             attachment.setContentType(tika.detect(is));
         } catch (IOException e) {
-            throw new FileUploadException("FileUploadError", "Fail to detect file type");
+            throw new FileUploadException("FileUploadError", "Fail to dectect file type");
         }
 
         if (personalInfo.getAmkaFile() != null) {
@@ -166,6 +167,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('EDIT_TEACHER')")
     @Transactional(rollbackFor = { EntityNotFoundException.class,
             EntityAlreadyExistsException.class, EntityInvalidArgumentException.class })
     public TeacherReadOnlyDTO updateTeacher(TeacherUpdateDTO dto)
@@ -215,13 +217,13 @@ public class TeacherService implements ITeacherService {
 //            teacher.getUser().setPassword(passwordEncoder.encode(dto.userUpdateDTO().password()));
 //        }
 
-        teacherRepository.save(teacher);                                      // προαιρετικό (optional)
+        teacherRepository.save(teacher);    // προαιρετικό
         log.info("Teacher with uuid={} updated successfully", dto.uuid());
         return mapper.mapToTeacherReadOnlyDTO(teacher);
     }
 
     @Override
-    @PreAuthorize('hasAuthority')
+    @PreAuthorize("hasAuthority('DELETE_TEACHER')")
     @Transactional(rollbackFor = { EntityNotFoundException.class })
     public TeacherReadOnlyDTO deleteTeacherByUUID(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
@@ -238,7 +240,8 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
+    @PreAuthorize("hasAuthority('VIEW_TEACHER')")
+    @Transactional(readOnly = true)                          // for optimization by springBoot purposes only.
     public TeacherReadOnlyDTO getTeacherByUUID(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
@@ -247,7 +250,8 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
+    @PreAuthorize("hasAuthority('VIEW_TEACHER') or (hasAuthority('VIEW_ONLY_TEACHER') and @securityService.isOwnTeacherProfile(#uuid, authentication))")
+    @Transactional(readOnly = true)                                      // for optimization by springBoot purposes only.
     public TeacherReadOnlyDTO getTeacherByUUIDDeletedFalse(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
@@ -256,6 +260,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('VIEW_TEACHERS')")
     @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getPaginatedTeachers(Pageable pageable) {
         Page<Teacher> teacherPage = teacherRepository.findAll(pageable);
@@ -266,7 +271,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
+    @Transactional(readOnly = true)                                   // for optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getPaginatedTeachersDeletedFalse(Pageable pageable) {
         Page<Teacher> teacherPage = teacherRepository.findAllByDeletedFalse(pageable);
         log.debug("Get paginated not deleted returned successfully, page={}, size={}",
@@ -276,7 +281,8 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
+    @PreAuthorize("hasAuthority('VIEW_TEACHERS')")
+    @Transactional(readOnly = true)                                   // for optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getTeachersPaginatedFiltered(Pageable pageable, TeacherFilters filters)
             throws EntityNotFoundException {
 
@@ -300,7 +306,7 @@ public class TeacherService implements ITeacherService {
 
         var filtered = teacherRepository.findAll(TeacherSpecification.build(filters), pageable);
 
-        log.debug("Filtered and paginated teachers were returned successfully with page= {} and size= {}",
+        log.debug("Filtered and paginated teachers were returned successfully with page={} and size={}",
                 pageable.getPageNumber(), pageable.getPageSize());
         return filtered.map(mapper::mapToTeacherReadOnlyDTO);
     }
@@ -322,7 +328,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    @Transactional(readOnly = true)                                 // simple query
+    @Transactional(readOnly = true)                                    // simple query
     public boolean isTeacherExistsByVat(String vat) {
         return teacherRepository.findByVat(vat).isPresent();
     }

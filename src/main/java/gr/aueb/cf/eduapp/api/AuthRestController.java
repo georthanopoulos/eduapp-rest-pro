@@ -21,8 +21,9 @@ public class AuthRestController {
     public ResponseEntity<AuthenticationResponseDTO> authenticate(
             @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
-        AuthenticationResponseDTO responseDTO = authenticationService.authenticate(authenticationRequestDTO);
+        AuthenticationResponseDTO responseDTO = authenticationService
+                .authenticate(authenticationRequestDTO);
 
-        return ResponseEntity.ok(responseDTO);
+        return  ResponseEntity.ok(responseDTO);
     }
 }

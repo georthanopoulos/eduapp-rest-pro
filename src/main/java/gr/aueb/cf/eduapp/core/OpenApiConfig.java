@@ -12,7 +12,7 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration                                        // Only when we have this annotation we are able to use the @Bean annotation below!
+@Configuration                                // Only when we have this annotation we are able to use the @Bean annotation below!
 /*
   Swagger UI shows an "Authorize" button
  */
@@ -54,18 +54,13 @@ public class OpenApiConfig {
 
     @Bean
     public OperationCustomizer globalSecurityResponses() {
-        return (operation, handlerMethod) -> {
 
+        return (operation, handlerMethod) -> {
             // Με το || το endpoint θεωρείται secured αν το annotation
             // -@SecurityRequirement(name = "bearerAuth")- υπάρχει είτε στη method είτε στην κλάση
+
             boolean isSecured = handlerMethod.hasMethodAnnotation(SecurityRequirement.class)
                     || handlerMethod.getBeanType().isAnnotationPresent(SecurityRequirement.class);
-
-            if (isSecured) {
-                operation.getResponses()
-                        .addApiResponse("401", new ApiResponse().description("Unauthorized - JWT token is missing or invalid"))
-                        .addApiResponse("403", new ApiResponse().description("Forbidden - You don't have permission to access this resource"));
-            }
 
             if (isSecured) {
                 var responses = operation.getResponses();
@@ -75,5 +70,6 @@ public class OpenApiConfig {
 
             return operation;
         };
+
     }
 }

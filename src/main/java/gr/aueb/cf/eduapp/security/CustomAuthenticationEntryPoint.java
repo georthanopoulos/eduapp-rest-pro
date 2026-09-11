@@ -1,6 +1,5 @@
 package gr.aueb.cf.eduapp.security;
 
-
 import gr.aueb.cf.eduapp.dto.ErrorResponseDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +24,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException e) throws IOException, ServletException {
-
         Object jwtErrorCode = request.getAttribute("auth_error_code");
         Object jwtErrorMessage = request.getAttribute("auth_error");
 

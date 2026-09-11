@@ -23,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -49,52 +48,49 @@ public class SecurityConfiguration {
         http
                 .cors(httpSecurityCorsConfigurer ->
                         httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)     // this line only matters in Server Size Rendering (SSR). Otherwise, it must be disabled!!!
-                                                           // The csrf does not exist in CSR way.
+                .csrf(AbstractHttpConfigurer::disable)                         // this line only matters in Server Size Rendering (SSR). Otherwise, it must be disabled!!!
+                                                                                  // The csrf does not exist in CSR way.
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/authenticate").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/teachers").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/teachers/{uuid}/*").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/auth/authenticate").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/teachers").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/teachers/{uuid}/*").permitAll()
 //                        .requestMatchers("/api/v1/eligible/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/*").hasAuthority("VIEW_USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/teachers/{uuid}").hasAuthority("EDIT_TEACHER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/teachers").hasAuthority("VIEW_TEACHERS")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/teachers/{uuid}").hasAnyAuthority("VIEW_TEACHER", "VIEW_ONLY_TEACHER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/teachers/{uuid}").hasAuthority("DELETE_TEACHER")
-                        .anyRequest().authenticated()
+                                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/users/*").hasAuthority("VIEW_USER")
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/teachers/{uuid}").hasAuthority("EDIT_TEACHER")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/teachers").hasAuthority("VIEW_TEACHERS")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/teachers/{uuid}").hasAnyAuthority("VIEW_TEACHER", "VIEW_ONLY_TEACHER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/teachers/{uuid}").hasAuthority("DELETE_TEACHER")
+                                .anyRequest().authenticated()
                 )
 
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))    // this line indicates that this app uses token instead of cookies, something which is expected as this is a CSR app.
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))        // this line indicates that this app uses token instead of cookies, something which is expected as this is a CSR app.
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)    //add this filter prior to authorization filter.
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler));
-
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);             // double * -> in order for all URLs to pass through CORS
-
+        source.registerCorsConfiguration("/**", configuration);         // double * -> in order for all URLs to pass through CORS.
         return source;
     }
 
     @Bean
+
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
                                                          PasswordEncoder passwordEncoder) {
-
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);   // Dao -> creates username and password. does all the job!
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);      // Dao -> creates username and password. does all the job!
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;
     }
@@ -107,6 +103,6 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);            // basic one way hashing algorithm, one of the two basic ones!
-    }                                                   // best practice to set 12 rounds. for safety purposes preventing from brute force attack.
+        return new BCryptPasswordEncoder(12);                      // basic one way hashing algorithm, one of the two basic ones!
+    }                                                                // best practice to set 12 rounds. for safety purposes preventing from brute force attack.
 }
