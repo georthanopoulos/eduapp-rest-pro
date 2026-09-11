@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.resilience.annotation.Retryable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -220,6 +221,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
+    @PreAuthorize('hasAuthority')
     @Transactional(rollbackFor = { EntityNotFoundException.class })
     public TeacherReadOnlyDTO deleteTeacherByUUID(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
