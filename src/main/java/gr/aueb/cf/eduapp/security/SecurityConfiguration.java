@@ -42,8 +42,9 @@ public class SecurityConfiguration {
     private List<String> allowedOrigins;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   AuthenticationProvider authenticationProvider) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            AuthenticationProvider authenticationProvider) throws Exception {
 
         http
                 .cors(httpSecurityCorsConfigurer ->
@@ -67,8 +68,7 @@ public class SecurityConfiguration {
 
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))    // this line indicates that this app uses token instead of cookies, something which is expected as this is a CSR app.
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)    //add this filter prior to authorization filter.
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler));
@@ -100,13 +100,13 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();            // basic one way hashing algorithm, one of the two basic ones!
-    }
-
+        return new BCryptPasswordEncoder(12);            // basic one way hashing algorithm, one of the two basic ones!
+    }                                                   // best practice to set 12 rounds. for safety purposes preventing from brute force attack.
 }
