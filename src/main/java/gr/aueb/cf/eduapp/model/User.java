@@ -31,7 +31,7 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(nullable = false)                           // Hashed password retained into Database. And BCrypt - one way hash. Signature!
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
