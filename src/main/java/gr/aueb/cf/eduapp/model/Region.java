@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "regions")
 public class Region {                                        // Not needed to extend AbstractEntity because we would need timestamp, something that would make difficult the insert process.
-
+                                                             // It is static reference data.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
