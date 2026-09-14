@@ -62,7 +62,7 @@ class TeacherRepositoryTest {
 
     @Test
     void findByUuid_whenTeacherExists_returnsTeacher() {
-        Teacher teacher = persistTeacher();
+        Teacher teacher = createDummyData();
 
         Optional<Teacher> found = teacherRepository.findByUuid(teacher.getUuid());
 
@@ -77,7 +77,7 @@ class TeacherRepositoryTest {
 
     @Test
     void findByUuidAndDeletedFalse_excludesSoftDeletedTeacher() {
-        Teacher teacher = persistTeacher();
+        Teacher teacher = createDummyData();
         teacher.softDelete();
         entityManager.flush();
 
@@ -87,7 +87,7 @@ class TeacherRepositoryTest {
 
     @Test
     void findByVat_andFindByVatAndDeletedFalse_behaveAsExpected() {
-        Teacher teacher = persistTeacher();
+        Teacher teacher = createDummyData();
 
         assertThat(teacherRepository.findByVat(teacher.getVat())).isPresent();
         assertThat(teacherRepository.findByVatAndDeletedFalse(teacher.getVat())).isPresent();
@@ -101,7 +101,7 @@ class TeacherRepositoryTest {
 
     @Test
     void findByPersonalInfoAmka_whenAmkaMatches_returnsTeacher() {
-        Teacher teacher = persistTeacher();
+        Teacher teacher = createDummyData();
 
         Optional<Teacher> found = teacherRepository.findByPersonalInfo_Amka(teacher.getPersonalInfo().getAmka());
 
@@ -111,15 +111,15 @@ class TeacherRepositoryTest {
 
     @Test
     void findByPersonalInfoAmka_whenAmkaDoesNotMatch_returnsEmpty() {
-        persistTeacher();
+        createDummyData();
 
         assertThat(teacherRepository.findByPersonalInfo_Amka("does-not-exist")).isEmpty();
     }
 
     @Test
     void findAllByDeletedFalse_returnsOnlyNonDeletedTeachers() {
-        Teacher active = persistTeacher();
-        Teacher deleted = persistTeacher();
+        Teacher active = createDummyData();
+        Teacher deleted = createDummyData();
         deleted.softDelete();
         entityManager.flush();
 
@@ -133,8 +133,8 @@ class TeacherRepositoryTest {
 
     @Test
     void existsByUuidAndUserUuid_trueForMatchingPair_falseForMismatch() {
-        Teacher teacher = persistTeacher();
-        Teacher other = persistTeacher();
+        Teacher teacher = createDummyData();
+        Teacher other = createDummyData();
 
         assertThat(teacherRepository.existsByUuidAndUser_Uuid(teacher.getUuid(), teacher.getUser().getUuid()))
                 .isTrue();
@@ -142,7 +142,7 @@ class TeacherRepositoryTest {
                 .isFalse();
     }
 
-    private Teacher persistTeacher() {
+    private Teacher createDummyData() {
         String unique = UUID.randomUUID().toString();
 
         User user = new User("user-" + unique, "encoded-password");
