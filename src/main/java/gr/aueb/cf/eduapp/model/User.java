@@ -39,7 +39,7 @@ public class User extends AbstractEntity implements UserDetails {
     private Teacher teacher;
 
 
-    public User(String username, String password) {                  // Public constructor with args.
+    public User(String username, String password) {                  // Public constructor with args. Easy way to crate new user with calling setters independently.
         this.username = username;
         this.password = password;
     }

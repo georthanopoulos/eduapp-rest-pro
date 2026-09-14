@@ -21,7 +21,7 @@ public class Teacher extends AbstractEntity{
     private Long id;
 
     @Column(unique = true, nullable = false, updatable = false, columnDefinition = "BINARY(16)")
-    private UUID uuid = UUID.randomUUID();             // It runs as soon as the object is created! (when a constructor is called e.g: new User(). It is an instance initializer. (it runs as a part of the creation process of the object! the UUID exists even before the "save" for DB storing.
+    private UUID uuid = UUID.randomUUID();             // It runs as soon as the object is created! (when a constructor is called e.g: new User(). It is an instance initializer. (it runs as a part of the creation process of the object! the UUID exists even before the "save" of the DB storing.
 
     @Column(unique = true, nullable = false)
     private String vat;
@@ -33,7 +33,7 @@ public class Teacher extends AbstractEntity{
     private String lastname;
 
     @Setter(AccessLevel.PACKAGE)                     // We don't care about the Getter as it is Entity not a collection.
-    @OneToOne(cascade = CascadeType.PERSIST,  fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.PERSIST,  fetch = FetchType.LAZY)    // PERSIST -> " If I save a new Teacher along with a NON-SAVED User included, then SAVE automatically the User too BUT DO NOT proceed to any further action towards the User automatically, in case of any future change performed to the Teacher!"
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -43,7 +43,7 @@ public class Teacher extends AbstractEntity{
     private Region region;
                                                                                                // orphanRemoval = true -> If the child entity gets detached from the parent (e.g: reference=null or substituted by another object) then the old child entity is automatically removed from the DB!!!
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)       // CascadeType.ALL -> whatever happens to the parent Entity (Persist,Merge,Remove,Refresh,detach) will be transmitted to the related entity automatically!!!
-    @JoinColumn(name = "personal_info_id")                           // Not needed "mappedBy:" on the other side because it is a unidirectional relationship. Consequently, we always go from the Teacher to PersonalInfo and NOT the opposite. (In fact, we can do it doesn't make sense!)
+    @JoinColumn(name = "personal_info_id")                           // Not needed "mappedBy:" on the other side because it is a unidirectional relationship. Consequently, we always go from the Teacher to PersonalInfo and NOT the opposite. (In fact, we can do it, but it doesn't make any sense!)
     private PersonalInfo personalInfo;
 
 
