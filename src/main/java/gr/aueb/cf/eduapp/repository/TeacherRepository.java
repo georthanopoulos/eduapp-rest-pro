@@ -18,7 +18,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpec
     Optional<Teacher> findByVat(String vat);
     Optional<Teacher> findByVatAndDeletedFalse(String vat);
 
-    Optional<Teacher> findByPersonalInfo_Amka(String amka);                 // amka is a field of the personal info entity (implicit join), noted with underscore for our understanding only!
+    Optional<Teacher> findByPersonalInfo_Amka(String amka);                 // amka is a field of the personal info entity, noted with underscore for our implicit join!!! SOS!
 
     @EntityGraph(attributePaths = {"personalInfo", "region"})
     Page<Teacher> findAllByDeletedFalse(Pageable pageable);
