@@ -30,9 +30,9 @@ public record TeacherUpdateDTO(
 
         @NotNull
         @Valid
-        UserInsertDTO userUpdateDTO,
+        UserUpdateDTO userUpdateDTO,         // Corrected the in class UserInsertDTO userUpdateDTO (probably mistaken code!)
 
         @NotNull
         @Valid
-        PersonalInfoInsertDTO personalInfoUpdateDTO
+        PersonalInfoUpdateDTO personalInfoUpdateDTO   // Corrected the in class PersonalInfoDTO personalUpdateDTO (probably mistaken code!)
 ) {}
