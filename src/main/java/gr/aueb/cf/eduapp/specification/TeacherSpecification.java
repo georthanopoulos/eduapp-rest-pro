@@ -20,7 +20,7 @@ public class TeacherSpecification {
     }
     public static Specification<Teacher> hasRegion(String region) {
         return ((root, query, criteriaBuilder) -> region == null ? criteriaBuilder.conjunction() :
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("region")), "%" + region.toLowerCase() + "%"));
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("region")), "%" + region.toLowerCase() + "%"));    // TODO root.get("region").get("name")
     }
 
     public static Specification<Teacher> isDeleted(boolean deleted) {   // default is false
