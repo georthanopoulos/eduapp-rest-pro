@@ -14,7 +14,7 @@ public class TeacherSpecification {
         );
     }
                                                                           // specific filtering is performed for every field except from the unique ones (uuid, vat, amka) through which only (up to) one Teacher can be specified!
-    public static Specification<Teacher> hasLastname(String lastname) {
+    public static Specification<Teacher> hasLastname(String lastname) {    //Static -> can be directly called as TeacherSpecification.build(filters) without "new TeacherSpecification()" needed! As, it is a method that belongs to the class and not to a specific instanceof it!!!
         return ((root, query, criteriaBuilder) -> lastname == null ? criteriaBuilder.conjunction() :
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("lastname")), "%" + lastname.toLowerCase() + "%"));
     }
