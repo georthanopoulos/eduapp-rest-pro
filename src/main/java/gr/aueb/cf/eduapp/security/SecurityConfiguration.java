@@ -37,7 +37,7 @@ public class SecurityConfiguration {
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
 
-    @Value("${allowed.origins}")
+    @Value("${allowed.origins}")     // see application-dev.properties file! Configuration here, in order to be able to accept requests from a UI/frontend from another domain. However, that origin must be added in the allowedOrigins in application-dev.properties file!!!
     private List<String> allowedOrigins;
 
     @Bean
