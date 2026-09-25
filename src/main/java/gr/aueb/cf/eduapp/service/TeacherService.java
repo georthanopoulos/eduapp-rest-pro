@@ -320,7 +320,7 @@ public class TeacherService implements ITeacherService {
         );
     }
 
-
+    // private helper method
     private String getFileExtension(String filename) {
         if (filename != null && filename.contains(".")) {
             return filename.substring(filename.lastIndexOf("."));
