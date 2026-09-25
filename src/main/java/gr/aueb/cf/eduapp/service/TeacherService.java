@@ -125,7 +125,7 @@ public class TeacherService implements ITeacherService {
                 Path.of(personalInfo.getAmkaFile().getFilePath()) : null;
         String originalFilename = amkaFile.getOriginalFilename();
         String savedName = UUID.randomUUID() + getFileExtension(originalFilename);
-        Path newFilePath = Paths.get(uploadDir).resolve(savedName);           // resolve -> performs path concatination by assigning the appropriate comparator depending on the OS, combining the uploadDir ="/data/uploads and savedName = "a3f8c2-e1.pdf". SOS!
+        Path newFilePath = Paths.get(uploadDir).resolve(savedName);           // resolve -> performs path concatenation by assigning the appropriate comparator depending on the OS, combining the uploadDir ="/data/uploads and savedName = "a3f8c2-e1.pdf". SOS!
 
         Attachment attachment = new Attachment();
         attachment.setFilename(originalFilename);
@@ -137,7 +137,7 @@ public class TeacherService implements ITeacherService {
             Tika tika = new Tika();
             attachment.setContentType(tika.detect(is));
         } catch (IOException e) {
-            throw new FileUploadException("FileUploadError", "Fail to dectect file type");
+            throw new FileUploadException("FileUploadError", "Fail to detect file type");
         }
 
         if (personalInfo.getAmkaFile() != null) {
