@@ -241,7 +241,7 @@ public class TeacherService implements ITeacherService {
 
     @Override
     @PreAuthorize("hasAuthority('VIEW_TEACHER')")
-    @Transactional(readOnly = true)                          // for optimization by springBoot purposes only.
+    @Transactional(readOnly = true)                          // Do not perform "dirty checking", DO not initiate flush-capable transaction! For optimization by springBoot purposes only.
     public TeacherReadOnlyDTO getTeacherByUUID(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
@@ -251,7 +251,7 @@ public class TeacherService implements ITeacherService {
 
     @Override
     @PreAuthorize("hasAuthority('VIEW_TEACHER') or (hasAuthority('VIEW_ONLY_TEACHER') and @securityService.isOwnTeacherProfile(#uuid, authentication))")
-    @Transactional(readOnly = true)                                      // for optimization by springBoot purposes only.
+    @Transactional(readOnly = true)                                      // Do not perform "dirty checking", DO not initiate flush-capable transaction! For optimization by springBoot purposes only.
     public TeacherReadOnlyDTO getTeacherByUUIDDeletedFalse(UUID uuid) throws EntityNotFoundException {
         Teacher teacher = teacherRepository.findByUuidAndDeletedFalse(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with uuid=" + uuid));
@@ -261,7 +261,7 @@ public class TeacherService implements ITeacherService {
 
     @Override
     @PreAuthorize("hasAuthority('VIEW_TEACHERS')")
-    @Transactional(readOnly = true)                                     // for optimization by springBoot purposes only.
+    @Transactional(readOnly = true)                                     // Do not perform "dirty checking", DO not initiate flush-capable transaction! For optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getPaginatedTeachers(Pageable pageable) {
         Page<Teacher> teacherPage = teacherRepository.findAll(pageable);
         log.debug("Get paginated returned successfully, page={}, size={}",
@@ -271,7 +271,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    @Transactional(readOnly = true)                                   // for optimization by springBoot purposes only.
+    @Transactional(readOnly = true)                                   // Do not perform "dirty checking", DO not initiate flush-capable transaction! For optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getPaginatedTeachersDeletedFalse(Pageable pageable) {
         Page<Teacher> teacherPage = teacherRepository.findAllByDeletedFalse(pageable);
         log.debug("Get paginated not deleted returned successfully, page={}, size={}",
@@ -282,7 +282,7 @@ public class TeacherService implements ITeacherService {
 
     @Override
     @PreAuthorize("hasAuthority('VIEW_TEACHERS')")
-    @Transactional(readOnly = true)                                   // for optimization by springBoot purposes only.
+    @Transactional(readOnly = true)                                   // Do not perform "dirty checking", DO not initiate flush-capable transaction! For optimization by springBoot purposes only.
     public Page<TeacherReadOnlyDTO> getTeachersPaginatedFiltered(Pageable pageable, TeacherFilters filters)
             throws EntityNotFoundException {
 
