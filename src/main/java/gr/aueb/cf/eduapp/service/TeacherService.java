@@ -311,6 +311,7 @@ public class TeacherService implements ITeacherService {
         return filtered.map(mapper::mapToTeacherReadOnlyDTO);
     }
 
+    // private helper method for wrapping
     private Page<TeacherReadOnlyDTO> singleResultPage(Teacher teacher, Pageable pageable) {
         return new PageImpl<>(
                 List.of(mapper.mapToTeacherReadOnlyDTO(teacher)),
