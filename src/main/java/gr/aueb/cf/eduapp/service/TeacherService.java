@@ -217,7 +217,7 @@ public class TeacherService implements ITeacherService {
 //            teacher.getUser().setPassword(passwordEncoder.encode(dto.userUpdateDTO().password()));
 //        }
 
-        teacherRepository.save(teacher);    // προαιρετικό
+        teacherRepository.save(teacher);                                  // optional - dirty checked already
         log.info("Teacher with uuid={} updated successfully", dto.uuid());
         return mapper.mapToTeacherReadOnlyDTO(teacher);
     }
