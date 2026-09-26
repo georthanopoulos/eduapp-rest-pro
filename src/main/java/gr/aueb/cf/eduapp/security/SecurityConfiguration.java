@@ -46,7 +46,7 @@ public class SecurityConfiguration {
             AuthenticationProvider authenticationProvider) throws Exception {
 
         http
-                .cors(httpSecurityCorsConfigurer ->
+                .cors(httpSecurityCorsConfigurer ->                            // Enables CORS by using corsConfiguration/source()
                         httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)                         // this line only matters in Server Size Rendering (SSR). Otherwise, it must be disabled!!!
                                                                                   // The csrf does not exist in CSR way.
