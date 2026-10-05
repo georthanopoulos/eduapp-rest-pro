@@ -61,7 +61,7 @@ public class TeacherRestController {
     @PostMapping
     public ResponseEntity<TeacherReadOnlyDTO> insertTeacher(
             @Valid @RequestBody TeacherInsertDTO teacherInsertDTO,
-            BindingResult bindingResult                                                          // written right after TeacherInsertDTO!!!
+            BindingResult bindingResult                                                          // written right after TeacherInsertDTO, so that validation errors not to automatically throw an exception, on the contrary to be pilled inside it so that we can handle them our way !!!
     ) throws EntityAlreadyExistsException, EntityInvalidArgumentException, ValidationException {
 
         teacherInsertValidator.validate(teacherInsertDTO, bindingResult);
