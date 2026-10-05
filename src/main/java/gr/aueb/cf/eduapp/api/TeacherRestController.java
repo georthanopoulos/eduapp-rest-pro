@@ -72,10 +72,10 @@ public class TeacherRestController {
 
         TeacherReadOnlyDTO teacherReadOnlyDTO = teacherService.saveTeacher(teacherInsertDTO);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{uuid}")
-                .buildAndExpand(teacherReadOnlyDTO.uuid())
+        URI location = ServletUriComponentsBuilder   // it builds the URL of the new source. For example hhtp://localhost:8080/api/v1/teachers/3f2a-.... .
+                .fromCurrentRequest()       // firstly, takes the current URL
+                .path("/{uuid}")              // then adds the /{uuid}
+                .buildAndExpand(teacherReadOnlyDTO.uuid())    // finally, adds the real uuid.
                 .toUri();
 
         return ResponseEntity
