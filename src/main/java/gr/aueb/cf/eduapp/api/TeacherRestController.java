@@ -117,6 +117,7 @@ public class TeacherRestController {
     ) throws EntityNotFoundException, FileUploadException {
 
         teacherService.saveAmkaFile(uuid, file);
+
         return ResponseEntity
                 .noContent()
                 .build();
