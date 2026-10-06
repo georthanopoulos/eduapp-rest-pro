@@ -38,7 +38,7 @@ public class OpenApiConfig {
                              Provides endpoints for managing teachers, users, and organizational data.
                              
                              Authentication & Authorization is done via JWT Bearer tokens.    
-                             Obtain a token from /api/auth/authenticate before using secured endpoints.   
+                             Obtain a token from /api/v1/auth/authenticate before using secured endpoints.   
                         """)
                         .contact(new Contact()
                                 .name("Coding Factory @ AUEB")
@@ -57,7 +57,7 @@ public class OpenApiConfig {
 
         return (operation, handlerMethod) -> {
             // Με το || το endpoint θεωρείται secured αν το annotation
-            // -@SecurityRequirement(name = "bearerAuth")- υπάρχει είτε στη method είτε στην κλάση
+            // -@SecurityRequirement(name = "bearer Authentication")- υπάρχει είτε στη method είτε στην κλάση
 
             boolean isSecured = handlerMethod.hasMethodAnnotation(SecurityRequirement.class)
                     || handlerMethod.getBeanType().isAnnotationPresent(SecurityRequirement.class);
