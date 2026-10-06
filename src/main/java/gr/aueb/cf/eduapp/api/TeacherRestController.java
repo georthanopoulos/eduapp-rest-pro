@@ -179,7 +179,7 @@ public class TeacherRestController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200", description = "Teacher deleted",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeacherReadOnlyDTO.class))
             ),
             @ApiResponse(
                     responseCode = "404", description = "Teacher not found",
