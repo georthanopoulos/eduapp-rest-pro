@@ -124,7 +124,7 @@ public class TeacherRestController {
     }
 
     @Operation(summary = "Update a teacher")
-    @SecurityRequirement(name = "Bearer Authentication")
+    @SecurityRequirement(name = "Bearer Authentication")     // Indicates that the endpoint needs JWT.
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200", description = "Teacher updated",
